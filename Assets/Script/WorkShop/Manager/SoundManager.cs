@@ -1,113 +1,146 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using System.Collections.Generic;
 
-// °”Àπ¥„ÀÈ‡ªÁπ sealed ‡æ◊ËÕªÈÕß°—π°“√ ◊∫∑Õ¥
+
 public sealed class SoundManager : MonoBehaviour
 {
-    // 1. Singleton Instance
-    private static SoundManager _instance;
+   
+    
+        private static SoundManager _instance;
 
-    // 2. Public Static Property (Global Access Point)
-    public static SoundManager Instance
-    {
-        get
+        public static SoundManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    Debug.LogError("SoundManager instance is null! Is it in the scene?");
+                }
+                return _instance;
+            }
+        }
+
+        [Header("Audio Sources")]
+        public AudioSource musicSource;
+        public AudioSource sfxSource;
+
+        [Header("Default Audio Clips")]
+        public AudioClip defaultButtonClick;
+        public AudioClip defaultBackgroundMusic;
+
+        [Header("Volume Settings")]
+        public float musicVolume = 0.5f;
+        public float sfxVolume = 0.7f;
+
+        private void Awake()
         {
             if (_instance == null)
             {
-                Debug.LogError("SoundManager instance is null! Is it in the scene?");
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
+
+                // ‡∏™‡∏£‡πâ‡∏≤‡∏á AudioSource ‡∏ñ‡πâ‡∏≤‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡∏°‡∏µ
+                if (musicSource == null)
+                {
+                    musicSource = gameObject.AddComponent<AudioSource>();
+                    musicSource.loop = true;
+                    musicSource.volume = musicVolume;
+                }
+
+                if (sfxSource == null)
+                {
+                    sfxSource = gameObject.AddComponent<AudioSource>();
+                    sfxSource.volume = sfxVolume;
+                }
+
+                // ‡πÄ‡∏•‡πà‡∏ô‡πÄ‡∏û‡∏•‡∏á‡∏û‡∏∑‡πâ‡∏ô‡∏´‡∏•‡∏±‡∏á
+                if (defaultBackgroundMusic != null)
+                {
+                    PlayMusic(defaultBackgroundMusic);
+                }
+
+                Debug.Log("üéµ SoundManager initialized!");
             }
-            return _instance;
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-    }
 
-    [Header("Audio Sources")]
-    // Audio Source  ”À√—∫‡æ≈ßª√–°Õ∫ (Looping)
-    public AudioSource musicSource;
-    // Audio Source  ”À√—∫‡Õø‡ø°µÏ‡ ’¬ß (Non-Looping)
-    public AudioSource sfxSource;
-
-    [Header("Default Audio Clips")]
-    public AudioClip defaultButtonClick;
-    public AudioClip defaultBackgroundMusic;
-
-    // 3. Singleton Initialization
-    private void Awake()
-    {
-        if (_instance == null)
+        // ‚úÖ ‡πÄ‡∏•‡πà‡∏ô‡πÄ‡∏û‡∏•‡∏á‡∏û‡∏∑‡πâ‡∏ô‡∏´‡∏•‡∏±‡∏á
+        public void PlayMusic(AudioClip clip)
         {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (clip == null || musicSource == null) return;
 
-            // µ√«® Õ∫·≈–‡æ‘Ë¡ Audio Source À“°¬—ß‰¡Ë¡’
-            if (musicSource == null) musicSource = gameObject.AddComponent<AudioSource>();
-            if (sfxSource == null) sfxSource = gameObject.AddComponent<AudioSource>();
-
-            // µ—Èß§Ë“æ◊Èπ∞“π
-            musicSource.loop = true; // ‡æ≈ßª√–°Õ∫¡—°®–«π´È”
-
-            PlayMusic(defaultBackgroundMusic);
+            musicSource.clip = clip;
+            musicSource.Play();
+            Debug.Log("üéµ Playing music: " + clip.name);
         }
-        else
+
+        // ‚úÖ ‡∏´‡∏¢‡∏∏‡∏î‡πÄ‡∏û‡∏•‡∏á
+        public void StopMusic()
         {
-            Destroy(gameObject);
+            if (musicSource != null)
+            {
+                musicSource.Stop();
+            }
         }
-    }
 
-    // ------------------- Music Controls -------------------
-
-    /// <summary>
-    /// ‡≈Ëπ‡æ≈ßª√–°Õ∫„À¡Ë
-    /// </summary>
-    public void PlayMusic(AudioClip clip)
-    {
-        if (clip == null || musicSource == null) return;
-
-        musicSource.clip = clip;
-        musicSource.Play();
-    }
-
-    public void StopMusic()
-    {
-        if (musicSource != null)
+        // ‚úÖ ‡πÄ‡∏•‡πà‡∏ô‡πÄ‡∏™‡∏µ‡∏¢‡∏á Effect
+        public void PlaySFX(AudioClip clip)
         {
-            musicSource.Stop();
+            if (clip == null || sfxSource == null)
+            {
+                Debug.LogWarning("‚ùå Cannot play SFX: clip or source is null");
+                return;
+            }
+
+            sfxSource.PlayOneShot(clip, sfxVolume);
+            Debug.Log("üîä Playing SFX: " + clip.name);
         }
-    }
 
-    // ------------------- SFX Controls -------------------
-
-    /// <summary>
-    /// ‡≈Ëπ‡Õø‡ø°µÏ‡ ’¬ß·∫∫§√—Èß‡¥’¬«®∫ (One-Shot)
-    /// </summary>
-    public void PlaySFX(AudioClip clip)
-    {
-        if (clip == null || sfxSource == null) return;
-
-        // „™È PlayOneShot ‡æ◊ËÕ„ÀÈ‡≈ËπÀ≈“¬‡ ’¬ß∑—∫´ÈÕπ°—π‰¥È
-        sfxSource.PlayOneShot(clip);
-    }
-
-    // ------------------- Volume Controls -------------------
-
-    /// <summary>
-    /// °”Àπ¥√–¥—∫‡ ’¬ßÀ≈—°¢Õß‡æ≈ßª√–°Õ∫ (0.0 ∂÷ß 1.0)
-    /// </summary>
-    public void SetMusicVolume(float volume)
-    {
-        if (musicSource != null)
+        // ‚úÖ ‡πÄ‡∏•‡πà‡∏ô‡πÄ‡∏™‡∏µ‡∏¢‡∏á Effect ‡∏ó‡∏µ‡πà‡∏ï‡∏≥‡πÅ‡∏´‡∏ô‡πà‡∏á‡πÉ‡∏î‡∏Å‡πá‡πÑ‡∏î‡πâ
+        public void PlaySFXAtPosition(AudioClip clip, Vector3 position, float volume = 1f)
         {
-            musicSource.volume = volume;
-        }
-    }
+            if (clip == null)
+            {
+                Debug.LogWarning("‚ùå Cannot play SFX at position: clip is null");
+                return;
+            }
 
-    /// <summary>
-    /// °”Àπ¥√–¥—∫‡ ’¬ßÀ≈—°¢Õß‡Õø‡ø°µÏ‡ ’¬ß (0.0 ∂÷ß 1.0)
-    /// </summary>
-    public void SetSFXVolume(float volume)
-    {
-        if (sfxSource != null)
-        {
-            sfxSource.volume = volume;
+            AudioSource.PlayClipAtPoint(clip, position, volume * sfxVolume);
+            Debug.Log("üîä Playing SFX at position: " + clip.name);
         }
-    }
+
+        // ‚úÖ ‡∏õ‡∏£‡∏±‡∏ö Volume ‡πÄ‡∏û‡∏•‡∏á
+        public void SetMusicVolume(float volume)
+        {
+            musicVolume = Mathf.Clamp01(volume);
+
+            if (musicSource != null)
+            {
+                musicSource.volume = musicVolume;
+            }
+        }
+
+        // ‚úÖ ‡∏õ‡∏£‡∏±‡∏ö Volume ‡πÄ‡∏™‡∏µ‡∏¢‡∏á Effect
+        public void SetSFXVolume(float volume)
+        {
+            sfxVolume = Mathf.Clamp01(volume);
+
+            if (sfxSource != null)
+            {
+                sfxSource.volume = sfxVolume;
+            }
+        }
+
+        // ‚úÖ ‡πÄ‡∏•‡πà‡∏ô‡πÄ‡∏™‡∏µ‡∏¢‡∏á‡∏õ‡∏∏‡πà‡∏°
+        public void PlayButtonClick()
+        {
+            if (defaultButtonClick != null)
+            {
+                PlaySFX(defaultButtonClick);
+            }
+        }
+    
 }

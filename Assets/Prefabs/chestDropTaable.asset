@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b45e723945874e44afe2f04ace7b83d, type: 3}
+  m_Name: chestDropTaable
+  m_EditorClassIdentifier: 
+  drops:
+  - itemPrefab: {fileID: 6277237743809756721, guid: a1a1bd505c723694584acfa344e663f5, type: 3}
+    dropChance: 100
+    minAmount: 1
+    maxAmount: 1
+  - itemPrefab: {fileID: 6004855489445732745, guid: 99c7a84a3a0bca849b2e8127a6630df2, type: 3}
+    dropChance: 100
+    minAmount: 1
+    maxAmount: 1
+  - itemPrefab: {fileID: -1181996676816563718, guid: 42a6ebce1d368fc408375a1417ec528f, type: 3}
+    dropChance: 53
+    minAmount: 1
+    maxAmount: 5
+  - itemPrefab: {fileID: -4816474039408227913, guid: 9b230f350e1769c4b8e1deeedb07ed77, type: 3}
+    dropChance: 49
+    minAmount: 1
+    maxAmount: 2
+  - itemPrefab: {fileID: 924748296945131324, guid: 4ff694ab9a6f2794fa8747c4a396d6d7, type: 3}
+    dropChance: 46
+    minAmount: 1
+    maxAmount: 4
+  - itemPrefab: {fileID: 7480914909069517481, guid: b7675bc7ae669844598e53a85237bb84, type: 3}
+    dropChance: 34
+    minAmount: 1
+    maxAmount: 3
+  guaranteedDrop: 1
+  showDebugLogs: 1

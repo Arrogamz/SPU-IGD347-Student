@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -15,6 +15,11 @@ public abstract class Stuff : Identity
     }
     public void Update()
     {
+        if (interactionTextUI == null)
+        {
+            return; 
+        }
+
         if (GetDistanPlayer() >= 2f || !isLock)
         {
             interactionTextUI.gameObject.SetActive(false);
